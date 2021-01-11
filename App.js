@@ -1,14 +1,23 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, Image, Button } from 'react-native';
+import { View, ScrollView } from 'react-native';
+import Header from './src/components/Header.js';
+import Content from './src/components/Content.js';
+import Footer from './src/components/Footer.js'
+import { view } from './src/styles/index.js';
 
 export default function App() {
   return (
-    <View>
-    <Image style = {{width: 100, height: 100}} source = { require('./src/img/chronograph.png')}/>
-    <Button title = "Pausar"/>
-    <Button title = "Salvar e zear"/>
-    </View>
+    <ScrollView>
+      <View style = {view.alinharTexto}>
+        <Header></Header>
+        <Content></Content>
+        <Footer></Footer>
+      </View>
+    </ScrollView>
+    
+      
+      
   );
 }
 
