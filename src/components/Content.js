@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, Button, FlatList } from 'react-native';
-import { img, conteine } from '../styles/index.js';
-import Container from './Container.js';
+import { Text, View, Image, Button, FlatList, ScrollView } from 'react-native';
+import { img, conteine, header } from '../styles/index.js';
 
 class Content extends Component{
     
@@ -10,10 +9,11 @@ class Content extends Component{
         super(props);
         this.state = {
             timer: null,
-            number: 0,
+            seg: 0,
+            min: 0,
             startStopText: 'Start',
-        }
-        
+            spents: [],
+        }     
         this.clearButton = this.clearButton.bind(this);
         this.startStopButton = this.startStopButton.bind(this);
     }
@@ -28,41 +28,62 @@ class Content extends Component{
 
             this.state.timer = setInterval(() => {
                 let newState = this.state;
-                newState.number += 0.1;
+                newState.seg += 0.1;
                 this.setState(newState);
-            }, 100);
+            }, 100);         
         } else {
             //Parar
             clearInterval(this.state.timer);
             let newState = this.state;
-            newState.startStopText = 'Start';
+            newState.startStopText = 'Resume';
             newState.timer = null;
             this.setState(newState);
         }
     }
-    clearButton(){
-        clearInterval(this.state.timer);
+    addSpent = newSpend => {
+        const vspents = [...this.state.spents]
         let newState = this.state;
+        clearInterval(this.state.timer);
         newState.startStopText = 'Start';
         newState.timer = null;
-        newState.number = 0;
+        vspents.unshift({
+          id: Math.random(),
+          segg: newState.seg.toFixed(1),
+        });
+        this.setState({
+            spents: vspents
+        })     
+    }
+    clearButton(){     
+        clearInterval(this.state.timer);
+        let newState = this.state;    
+        newState.startStopText = 'Start';
+        newState.timer = null;
+        newState.seg = 0; 
         this.setState(newState);
-
     }
    
     render(){
         return(
             <View>
-                <View style = {conteine.blocoA}>
+                <View>
                     <Image style = {img.formatacao} source = { require('../img/chronograph.png')}/>
                 </View>
-                <View style = {conteine.blocoB}>
-                    <Text style = {conteine.center}>{this.state.number.toFixed(1)}</Text>
+                <View>
+                    <Text style = {conteine.crom}>{this.state.seg.toFixed(1)}</Text>
                 </View>
                 <View style = {conteine.blocoC}>
-                    <Button  title='Pausa' onPress = {this.startStopButton}/>
-                    <Button title = 'Salvar e zear' onPress = {this.clearButton}/>
+                    <Button  title={this.state.startStopText} onPress = {this.startStopButton}/>
+                    <Button title = 'Salvar' onPress = {this.addSpent}/>
+                    <Button title = 'Zear' onPress = {this.clearButton}/>              
                 </View>
+                <ScrollView>
+                    <View>     
+                        <FlatList data = {this.state.spents} 
+                        keyExtractor = {item => {item.id}}
+                        renderItem = {({ item }) => <Text style = {conteine.list}> {item.segg} segundos</Text> }/>  
+                    </View>
+                </ScrollView>
             </View>
         );
     }
